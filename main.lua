@@ -1,28 +1,33 @@
--- Configuration
 local Main = {
     GitRepoName = "badscarz/h1iyhub",
-    Branch = "main" -- Make sure this matches your GitHub branch name!
+    Branch = "main",
+    CurrentVersion = "v1.0.3" -- Change this locally to test the update trigger
 }
 
--- Simple Fetcher (No subfolders)
 local function GetFile(fileName)
-    -- This builds: https://raw.githubusercontent.com/badscarz/h1iyhub/main/fileName
     local url = "https://raw.githubusercontent.com/" .. Main.GitRepoName .. "/" .. Main.Branch .. "/" .. fileName
-    
     local success, content = pcall(game.HttpGet, game, url)
-    
-    if success and content then
-        return content
-    else
-        warn("Failed to fetch: " .. fileName)
-        return nil
-    end
+    return (success and content) and content or nil
 end
 
--- Example of how to use it:
-local hashData = GetFile("ModuleHashs.dat")
-local mainScript = GetFile("script.lua")
+local hashDataStr = GetFile("ModuleHashs.dat")
 
-if mainScript then
-    loadstring(mainScript)()
+if hashDataStr then
+    local success, LatestHashes = pcall(function() return loadstring(hashDataStr)() end)
+    
+    if success and LatestHashes then
+        if LatestHashes["MainScript"] ~= Main.CurrentVersion then
+            print("[h1iyHub] Updating to " .. LatestHashes["MainScript"] .. "...")
+            local scriptContent = GetFile("script.lua")
+            if scriptContent then loadstring(scriptContent)() end
+        else
+            print("[h1iyHub] Up to date. Loading...")
+            local scriptContent = GetFile("script.lua")
+            if scriptContent then loadstring(scriptContent)() end
+        end
+    else
+        warn("[h1iyHub] Hash file error.")
+    end
+else
+    warn("[h1iyHub] Connection failed.")
 end
