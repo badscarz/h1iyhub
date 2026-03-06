@@ -1,1 +1,5 @@
-
+-- ModuleHashs.dat content
+return {
+    ["MainScript"] = "v1.0.4",
+    ["UIConfig"] = "hash_9921abc"
+}
