@@ -3,3 +3,7 @@ return {
     ["MainScript"] = "v1.0.4",
     ["UIConfig"] = "hash_9921abc"
 }
+return {
+    ["MainScript"] = "v1.0.4",
+    ["UpdateNotes"] = "Fixed UI scaling and added new hub features."
+}
